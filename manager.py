@@ -1,5 +1,6 @@
 import time
 import json
+import threading
 
 from playlist import Playlist
 
@@ -11,32 +12,49 @@ class Manager:
         self,
         client_id,
         client_secret,
-        config_file,
-        ):
+        playlists,
+        wait_between_checks=15,
+    ):
+
+        sp = spotipy.Spotify(
+            auth_manager=SpotifyOAuth(
+                client_id=client_id,
+                client_secret=client_secret,
+                redirect_uri="http://127.0.0.1:5907/callback",
+                scope="ugc-image-upload playlist-modify-public",
+            ),
+            retries=5,
+        )
 
         self.playlists = list()
-        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-            client_id=client_id,
-            client_secret=client_secret,
-            redirect_uri="http://127.0.0.1:5907/callback",
-            scope="ugc-image-upload playlist-modify-public",
-        ))
-
-        with open(config_file) as f:
-            conf = json.load(f)
-        for pconf in conf:
+        for pconf in playlists:
             self.playlists.append(
                 Playlist(sp, **pconf)
             )
 
-    def run(self):
+        self.wait_between_checks = wait_between_checks
+
+    def check_playlist(self, pst):
+        exception_counter = 0
+
         while True:
-            for pst in self.playlists:
-                try:
-                    pst.check()
-                except Exception as e:
-                    print(f"Exception while checking for playlist {pst.name} ({pst.id}): {e}")
-                time.sleep(1)
+            try:
+                pst.check()
+                time.sleep(self.wait_between_checks)
+            except Exception as e:
+                exception_counter += 1
+                print(f"Exception while checking for playlist {pst.name} ({pst.id}): {e}")
+
+            if exception_counter > 20:
+                print(f"Aborting checks for playlist {pst.name} ({pst.id}) due to too many errors")
+                break
+
+    def run(self):
+        for pst in self.playlists:
+            threading.Thread(
+                target=self.check_playlist, args=(pst,)
+            ).start()
+            time.sleep(1)
 
 if __name__ == '__main__':
     manager = Manager(
