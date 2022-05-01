@@ -1,0 +1,26 @@
+{
+    "client_id": "4c96da7ed3...b52738c",
+    "client_secret": "95f881eb...6d3712acc",
+    "wait_between_checks": 1,
+    "playlists": [
+        {
+            "id": "3Rd7hZPhKmSDNKfCyxWM1E",
+            "name": "the name",
+            "description": "the description",
+            "image_path": null,
+            "log_file": "./logs/custom.log",
+            "image_path": "/path/to/some/image.jpeg"
+        },
+        {
+            "id": "1jJkz1Y3380ORYKB89PN4k",
+            "name": "playlist4",
+            "description": null
+        },
+        {
+            "id": "3YgZXRbogzxUoliukeqO5K"
+        },
+        {
+            "id": "1VLX2ZF7pImglxNNfWObxh"
+        }
+    ]
+}
