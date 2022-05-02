@@ -1,3 +1,4 @@
+import os
 import time
 import json
 import threading
@@ -14,7 +15,14 @@ class Manager:
         client_secret,
         playlists,
         wait_between_checks=15,
+        error_file='./errors.log',
     ):
+
+        self.error_file = error_file
+
+        os.makedirs(
+            os.path.dirname(self.error_file), exist_ok=True
+        )
 
         sp = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
@@ -44,9 +52,13 @@ class Manager:
             except Exception as e:
                 exception_counter += 1
                 print(f"Exception while checking for playlist {pst.name} ({pst.id}): {e}")
+                with open(self.error_file, 'a') as f:
+                    f.write(f"Exception while checking for playlist {pst.name} ({pst.id}): {e}\n")
 
             if exception_counter > 20:
                 print(f"Aborting checks for playlist {pst.name} ({pst.id}) due to too many errors")
+                with open(self.error_file, 'a') as f:
+                    f.write(f"Aborting checks for playlist {pst.name} ({pst.id}) due to too many errors\n")
                 break
 
     def run(self):

@@ -45,16 +45,16 @@ class Playlist:
 
     def check(self):
         new_data = self.sp.playlist(self.id)
-        print(f"Checking playlist {self.name} ({self.id})")
+        print(f"Checking \"{self.name}\" {self.id}")
         if (new_data['name'], new_data['description']) != (self.name, self.description):
             with open(self.log_file, 'a') as f:
                 f.write(
-                    f"{datetime.utcnow()} - Detected a change on playlist {self.name} ({self.id})\n"
+                    f"{datetime.utcnow()} - Detected changes on \"{self.name}\" {self.id}\n"
                 )
             self.revert_changes()
 
     def revert_changes(self):
-        print(f"{datetime.utcnow()} - Reverting changes to {self.name} ({self.id})")
+        print(f"{datetime.utcnow()} - Reverting changes to \"{self.name}\" {self.id}")
 
         self.sp.playlist_change_details(
             self.id,

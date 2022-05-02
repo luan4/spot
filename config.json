@@ -2,6 +2,7 @@
     "client_id": "4c96da7ed3...b52738c",
     "client_secret": "95f881eb...6d3712acc",
     "wait_between_checks": 1,
+    "error_file": "./errors.log",
     "playlists": [
         {
             "id": "3Rd7hZPhKmSDNKfCyxWM1E",
