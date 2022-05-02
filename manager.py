@@ -7,6 +7,7 @@ from playlist import Playlist
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from spotipy.cache_handler import MemoryCacheHandler
 
 class Manager:
     def __init__(
@@ -30,6 +31,7 @@ class Manager:
                 client_secret=client_secret,
                 redirect_uri="http://127.0.0.1:5907/callback",
                 scope="ugc-image-upload playlist-modify-public",
+                cache_handler=MemoryCacheHandler(),
             ),
             retries=5,
         )
